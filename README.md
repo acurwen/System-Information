@@ -33,6 +33,9 @@ Afterwards, I use two if statements to check if the input is valid (either 'y' o
 
 ## 1. IP Addresses:
 
+For private IP, I found the command `hostname -I` and saved that to a variable to print. 
+
+
 ## 2. Current User:
 
 To show the current user, I remembered that I could simply use the `whoami` command. I saved the `whoami` command to a new variable named "user" and wrote an echo statement to print out the user name:
@@ -77,4 +80,28 @@ Using `echo`, I provided the amount of used memory out of total memory to the us
 
 ![image](https://github.com/user-attachments/assets/3b93e58d-38e7-42db-9d47-7a1b84387f84)
 
- 
+## Top 5 Memory Processes:
+
+To output the top 5 memory processes in chart form, I used the `ps` command to get an output of processes. 
+
+With `ps`, I used the -e flag to list all processes and the -o flag to specify which column headers I wanted to include in the output chart: process id, command and the memory percentage: `pid,comm,%mem`
+
+Then I used `--sort=-%mem` to sort the memory percentage column by greatest to lowest. (The '--' is used to separate the `sort` command from the part of the command where I specify which columns I want to output.)
+
+Full line:  `ps -eo pid,comm,%mem --sort=-%mem`
+
+To get the first 5 lines to print, I funneled ( | ) the above command with  `head -n 6`.
+
+`ps -eo pid,comm,%mem --sort=-%mem | head -n 6`
+
+In my script, I echo out this line after an echo message that says, "Here are the top 5 processes for Memory:"
+
+![image](https://github.com/user-attachments/assets/11b3023e-16e6-4bc2-9860-812c1ace32de)
+
+## Top 5 CPU Processes:
+
+To output the top 5 CPU processes in a chart, I repeated the command used for my top 5 memory processes section and just replaced '%mem' with '%cpu'.
+
+`ps -eo pid,comm,%cpu --sort=-%cpu | head -n 6`
+
+## Network Connectivity:
