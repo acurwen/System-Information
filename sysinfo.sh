@@ -29,11 +29,16 @@ while true
 do
         read -p "Please enter the corresponding number for the information you need or type 'x' to quit: " number
 
+        # Public & Private IP Addresses
         if [ "$number" == 1 ] 
         then
-                echo "Your private IP is _, and your public IP is _."
+                privateip=$(hostname -I)
+                echo " "
+                echo "Your private IP is "$privateip" and your public IP is _." #public IP seems to require a URL of an external service
+                echo " "
                 return
 
+        # Current User
         elif [ "$number" == 2 ]
         then
                 user=$(whoami)
@@ -42,23 +47,23 @@ do
                 echo " "
                 return
 
+        # CPU Information
         elif [ "$number" == 3 ]
         then
-                
-               # menu=$(top -bn1 | grep "%Cpu(s):")
                 idle_CPU=$(top -bn1 | grep "%Cpu(s):" | awk -F ',' '{print $4}')
-                echo  " "
-                #echo "$menu"
+                echo " "
                 echo "The current idle CPU is: "$idle_CPU.""
                 echo " "
                 return
-                
+
+        # Memory Information      
         elif [ "$number" == 4 ]
         then
                 total_mem=$(top -bn1 | grep "MiB Mem : " | awk '{print $4}')
                 free_mem=$(top -bn1 | grep "MiB Mem : " | awk '{print $6}')
                 used_mem=$(top -bn1 | grep "MiB Mem : " | awk '{print $8}')
                 buff_cache_mem=$(top -bn1 | grep "MiB Mem : " | awk '{print $10}')
+
                 avail_mem=$(echo "$buff_cache_mem + $free_mem" | bc)
                 
                 echo " "
@@ -66,23 +71,33 @@ do
                 echo "There is an estimated amount of "$avail_mem" Mebibyte free."
                 echo " "
                 return
-                
+
+        # Top 5 Memory Processes        
         elif [ "$number" == 5 ]
         then
-                echo "Here is a table of the top 5 Memory Processes:"
+                echo " "
+                echo "Here are the top 5 Memory Processes:"
+                echo "$(ps -eo pid,comm,%mem --sort=-%mem | head -n 6)"
+                echo " "
                 return
-                
+
+        # Top 5 CPU Processes       
         elif [ "$number" == 6 ]
         then
-                echo "Here is a table of the top 5 CPU Processes:"
+                echo " "
+                echo "Here are the top 5 CPU Processes:"  
+                echo "$(ps -eo pid,comm,%cpu --sort=-%cpu | head -n 6)"
+                echo " "
                 return
-                
+
+        # Network Connectivity Information
         elif [ "$number" == 7 ]
         then
                 echo "Please provide a URL or IP address to connect to:"
                 read url
                 return
-                
+
+        # Exit Menu        
         elif [ "$number" == x ]
         then
                 exit 1
@@ -102,9 +117,7 @@ done
 # Enabling user to pick from the menu again or choose to exit. 
 while true
 do
-
 menu
-
     while true
     do  
         read -p "Would you like to choose another menu option? (y/n): " response
