@@ -1,4 +1,4 @@
-# System-Information
+# System Information Script in Bash
 
 ## Purpose: 
 
@@ -30,3 +30,51 @@ Afterwards, I use two if statements to check if the input is valid (either 'y' o
 **While Loop to have user pick from the menu again:**
 
 ![image](https://github.com/user-attachments/assets/a022da6f-1826-4d84-9420-c25d3ef88ae3)
+
+## 1. IP Addresses:
+
+## 2. Current User:
+
+To show the current user, I remembered that I could simply use the `whoami` command. I saved the `whoami` command to a new variable named "user" and wrote an echo statement to print out the user name:
+
+```
+user=$(whoami)
+echo "You are user: "$user"."
+```
+
+## 3. CPU Information:
+
+To show CPU, I used the `top` command to get a list of the ongoing processes, then used `grep` to isolate the line starting with "%Cpu(s):" → `top -bn1 | grep "%Cpu(s):"`
+
+Then I used `awk` to print the CPU id value to get the idle CPU: `top -bn1 | grep "%Cpu(s):" | awk '{print $8}'`
+
+However, when I tested this command out on the terminal, sometimes it would correctly output the idle CPU and other times it would output "id". I figured that depending on the changing values in the row, sometimes the "eigth" value in the row would either be the actual id amount or the word 'id'.
+
+Script:
+
+![image](https://github.com/user-attachments/assets/8d5537f6-d69c-4732-b0cf-cf0e6c2fd37d)
+
+Output:
+
+![image](https://github.com/user-attachments/assets/eeb4dc1d-9b3d-4077-81e9-f6fd046fc188)
+
+Through testing, I saw that when idle CPU was 100, there was no space between the idle amount and the value before it. So the `awk` command would return 'id' as the eight value. However, I also noticed this happened when the idle amount was a 2-digit number as well.
+
+Since I am only printing out the idle CPU amount for this section and not doing any math that requires me to isolate the idle CPU amount as an integer, I changed the `awk` statement to have a delineator of a comma instead of a space: `awk -F ',' '{print $4}'`
+
+This worked to isolate the idle CPU, however, when printing both the idle CPU and the entire CPU row from `top` to crosscheck, the values for idle CPU didn't match. I took this to mean that since I'm outputting a snapshot of top (since it ususally shows ongoing processes) that the idle CPU value might change between the script running each line of code (one line to show the full row and the next line to only print the idle CPU). Or, it could be that since I'm saving these "values" to variables, the variables are representing the snapshot of the information at the time the script is called. 
+
+![image](https://github.com/user-attachments/assets/96f69385-dccf-4106-b582-944abd35ea3d)
+
+
+## 4. Memory Information:
+
+For memory, I used the `top` command to get a list of ongoing processes, then used `grep` to isolate the line starting with "MiB Mem :" → `top -bn1 | grep "MiB Mem : "`
+
+Then I used `awk` to print four values within the memory row: total mem, used mem, free mem and the buff/cache amount of mem. 
+
+Using `echo`, I provided the amount of used memory out of total memory to the user as well as an estimated amount of the available free memory. To calculate an estimate of the available memory, I added the free mem and buff/cache mem amounts together from the `top` output. 
+
+![image](https://github.com/user-attachments/assets/3b93e58d-38e7-42db-9d47-7a1b84387f84)
+
+ 
