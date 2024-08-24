@@ -5,6 +5,7 @@
 menu() {
 
 # Presenting the user the menu
+echo " "
 echo "Hello. Please review the following menu:"
 echo " "
 echo "Public & Private IP Addresses - 1"
@@ -35,17 +36,35 @@ do
 
         elif [ "$number" == 2 ]
         then
-                echo "You are user _."
+                user=$(whoami)
+                echo " "
+                echo "You are user: "$user"."
+                echo " "
                 return
 
         elif [ "$number" == 3 ]
         then
-                 echo "The system has _ CPU."
+                
+               # menu=$(top -bn1 | grep "%Cpu(s):")
+                idle_CPU=$(top -bn1 | grep "%Cpu(s):" | awk -F ',' '{print $4}')
+                echo  " "
+                #echo "$menu"
+                echo "The current idle CPU is: "$idle_CPU.""
+                echo " "
                 return
                 
         elif [ "$number" == 4 ]
         then
-                echo "There is _ Mebibyte unused memory of total _ Mebibyte."
+                total_mem=$(top -bn1 | grep "MiB Mem : " | awk '{print $4}')
+                free_mem=$(top -bn1 | grep "MiB Mem : " | awk '{print $6}')
+                used_mem=$(top -bn1 | grep "MiB Mem : " | awk '{print $8}')
+                buff_cache_mem=$(top -bn1 | grep "MiB Mem : " | awk '{print $10}')
+                avail_mem=$(echo "$buff_cache_mem + $free_mem" | bc)
+                
+                echo " "
+                echo "There is "$used_mem" Mebibyte used memory of total "$total_mem" Mebibyte."
+                echo "There is an estimated amount of "$avail_mem" Mebibyte free."
+                echo " "
                 return
                 
         elif [ "$number" == 5 ]
@@ -71,7 +90,8 @@ do
 
         else 
                 echo " "
-                echo "Input not valid."      
+                echo "Input not valid." 
+                echo " "     
                 
         fi
 
