@@ -8,19 +8,19 @@ menu() {
 echo " "
 echo "Hello. Please review the following menu:"
 echo " "
-echo "Public & Private IP Addresses - 1"
+echo "1. Private & Public IP Addresses"
 echo " "
-echo "Who is the Current User? - 2"
+echo "2. Who is the Current User?"
 echo " "
-echo "CPU Information - 3"
+echo "3. CPU Information"
 echo " "
-echo "Memory Information - 4"
+echo "4. Memory Information"
 echo " "
-echo "Top 5 Memory Processes - 5"
+echo "5. Top 5 Memory Processes"
 echo " "
-echo "Top 5 CPU Processes - 6"
+echo "6. Top 5 CPU Processes"
 echo " "
-echo "Network Connectivity - 7"
+echo "7. Network Connectivity"
 echo " "
 
 
@@ -29,21 +29,23 @@ while true
 do
         read -p "Please enter the corresponding number for the information you need or type 'x' to quit: " number
 
-        # Public & Private IP Addresses
+        # Private & Public IP Addresses
         if [ "$number" == 1 ] 
         then
                 privateip=$(hostname -I)
+                publicip=$(curl -s ifconfig.me)
                 echo " "
-                echo "Your private IP is "$privateip" and your public IP is _." #public IP seems to require a URL of an external service
+                echo "Your private IP is "$privateip"and your public IP is "$publicip"." 
                 echo " "
                 return
+                
 
         # Current User
         elif [ "$number" == 2 ]
         then
                 user=$(whoami)
                 echo " "
-                echo "You are user: "$user"."
+                echo "You are user '"$user"'."
                 echo " "
                 return
 
@@ -67,8 +69,8 @@ do
                 avail_mem=$(echo "$buff_cache_mem + $free_mem" | bc)
                 
                 echo " "
-                echo "There is "$used_mem" Mebibyte used memory of total "$total_mem" Mebibyte."
-                echo "There is an estimated amount of "$avail_mem" Mebibyte free."
+                echo "There are "$used_mem" Mebibytes of used memory out of a total of "$total_mem" Mebibytes."
+                echo "There is an estimated amount of "$avail_mem" Mebibytes free."
                 echo " "
                 return
 
@@ -93,8 +95,11 @@ do
         # Network Connectivity Information
         elif [ "$number" == 7 ]
         then
-                echo "Please provide a URL or IP address to connect to:"
-                read url
+                echo " "
+                read -p "Please enter a URL or IP address to connect to: " url
+                time=$(curl -o /dev/null -s -w "%{time_connect}\n" "$url")
+                echo "It took $time seconds to connect to "$url"."
+                echo " "
                 return
 
         # Exit Menu        
