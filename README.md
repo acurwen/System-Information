@@ -2,7 +2,7 @@
 
 ## Purpose: 
 
-For this project, I am tasked with creating a user-friendly script that can be run from the terminal for a user to easily get important system information, such as public & private IP addresses, who the current user is, information on CPU and Memory, as well as the Top % Processes for both Memory and CPU, and information on network connectivity based on an URL or IP address.
+I created a user-friendly script that can be run from the terminal for a user to easily get important system information, such as public & private IP addresses, who the current user is, information on CPU and Memory, as well as the Top % Processes for both Memory and CPU, and information on network connectivity based on an URL or IP address.
 
 ## Initial Structure of Script:
 
@@ -33,7 +33,11 @@ Afterwards, I use two if statements to check if the input is valid (either 'y' o
 
 ## 1. IP Addresses:
 
-For private IP, I found the command `hostname -I` and saved that to a variable to print. 
+For the private IP, I found the command `hostname -I` and saved that to a variable to print. The -I flag is to used to output all IP addresses related to the "host". 
+
+For the public IP, I used the `curl` command to retrieve it from a site called 'ifconfig.me' using the -s flag to prevent any other output than the public IP address from showing. Saved that to a variable as well and then used an echo statement print both for the user. 
+
+![image](https://github.com/user-attachments/assets/18a8a107-5eea-493c-a7cb-c895c9bce21b)
 
 
 ## 2. Current User:
@@ -105,3 +109,19 @@ To output the top 5 CPU processes in a chart, I repeated the command used for my
 `ps -eo pid,comm,%cpu --sort=-%cpu | head -n 6`
 
 ## Network Connectivity:
+
+To show information on a network connection, I used the `curl` and `read` commands. 
+I used the 'o' and 's' flags to prevent the standard output of curl connecting to the URL from printing and to remove other information like speed upload or time spent and /dev/null as the file argument to ensure nothing printed. Then I used the 'w' flag to print out the value of the "time_connect" variable and save it as a variable called 'time'.
+
+Before adding in read, I tested this command with 'https://www.google.com/' google.com and got consistent results in seconds back. 
+Then I changed google.com to a variable called 'url' to be read from the user. Tested out google.com again, a page from Canvas and my IP address for my VSCode EC2 to verify this part of the menu worked. 
+
+![image](https://github.com/user-attachments/assets/2420688a-537f-4783-987f-ca124892b526)
+
+## Conclusion
+
+To finish off, I ran through the script on both my VSCode Instance and Student Instance to test usability and make stylistic chnages to the echo messages. 
+
+This was a good project to reinforce practice on while loops and if statements and test out newer commands like curl further. 
+
+
