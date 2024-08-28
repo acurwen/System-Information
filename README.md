@@ -25,7 +25,7 @@ I didn't yet know how to achieve retrieving the information needed for each menu
 
 Lastly, as seen in the above screenshot I included `return` at the end of all my if/elif sections. Similar to my adventure story script, I included the entire script in a function called "menu()". At the very end of my script, I created another while loop that calls the menu function and then nested another while loop within it where I ask the user if they want to choose from the menu again with `read -p`.
 
-Afterwards, I use two if statements to check if the input is valid (either 'y' or 'n') and then echo an exiting message if the user types 'n'. If the user types in an invalid input, I included an else clause that would echo an error message and the nested while loop prompts the user to answer again. The `return` commands mentioned before will ensure that the script will run this while loop after showing the desired menu options to the user. 
+Afterwards, I use two if statements to check if the input is valid (either 'y' or 'n') and then echo an exiting message if the user types 'n'. If the user types in an invalid input, I included an else clause that would echo an error message and the nested while loop prompts the user to answer again. The `return` commands mentioned before will ensure that the script will run this while loop after a user is shown the ouput of their desired menu option. 
 
 **While Loop to have user pick from the menu again:**
 
@@ -77,7 +77,7 @@ Through testing, I saw that when idle CPU was 100, there was no space between th
 
 Since I am only printing out the idle CPU amount for this section and not doing any math that requires me to isolate the idle CPU amount as an integer, I changed the `awk` statement to have a delineator of a comma instead of a space: `awk -F ',' '{print $4}'`
 
-This worked to isolate the idle CPU, however, when printing both the idle CPU and the entire CPU row from `top` to crosscheck, the values for idle CPU didn't always match. I took this to mean that since I'm outputting a snapshot of top (since it usually shows ongoing processes) that the idle CPU value might change between the script running each line of code (one line to show the full row and the next line to only print the idle CPU). Or similarly, it could be that since I'm saving these "values" to variables, the variables are representing the snapshot of the information at the time the script is called. And because I use -b and -n as flags to capture a snapshot of the processes instead of a "real-time" output.
+This worked to isolate the idle CPU, however, when printing both the idle CPU and the entire CPU row from `top` to crosscheck, the values for idle CPU didn't always match. I took this to mean that since I'm outputting a snapshot of top (since it usually shows ongoing activity) that the idle CPU value might change between the script running each line of code (one line to show the full row and the next line to only print the idle CPU). Or similarly, it could be that since I'm saving these "values" to variables, the variables are representing the snapshot of the information at the time the script is called. And because I use -b and -n as flags to capture a snapshot of the processes instead of a "real-time" output.
 
 
 ![image](https://github.com/user-attachments/assets/96f69385-dccf-4106-b582-944abd35ea3d)
@@ -131,7 +131,7 @@ To show information on a network connection, I found the following command that 
 
 - The 'w' flag prints out the value of the "time_connect" variable specifically. Without either the -o or -w flags, the curl command printed out what looked like background site information of the site provided. 
 
-I saved this whole command to a variable called 'time'. ` time=$(curl -o /dev/null -s -w "%{time_connect}\n" url)`
+I saved this whole command to a variable called 'time': ` time=$(curl -o /dev/null -s -w "%{time_connect}\n" url)`
 
 Before adding in read, I tested this command with 'https://www.google.com/' as the url and got consistent results in seconds back. 
 Then I used the `read -p` command to read the URL or IP address from the user, saved it to a variable called url and then used it in the above function. 
@@ -143,8 +143,6 @@ Tested out google.com again, a page from Canvas and my IP address for my VSCode 
 
 ## Conclusion
 
-To finish off, I ran through the script on both my VSCode Instance and Student Instance to test usability and make stylistic chnages to the echo messages. 
-
-This was a good project to reinforce practice on while loops and if statements and test out newer commands like curl further. 
+To finish off, I ran through the script on both my VSCode Instance and Student Instance to test usability and make stylistic chnages to the echo messages. This was a good project to reinforce practice on while loops and if statements and test out newer commands like curl further. 
 
 
