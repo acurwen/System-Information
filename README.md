@@ -33,9 +33,15 @@ Afterwards, I use two if statements to check if the input is valid (either 'y' o
 
 ## 1. IP Addresses:
 
-For the private IP, I found the command `hostname -I` and saved that to a variable to print. The -I flag is to used to output all IP addresses related to the "host". 
+For the private IP, I found the command `hostname -I` and saved that to a variable to print. The -I flag is used to output all IP addresses related to the "host". 
 
-For the public IP, I used the `curl` command to retrieve it from a site called 'ifconfig.me' using the -s flag to prevent any other output than the public IP address from showing. Saved that to a variable as well and then used an echo statement print both for the user. 
+For the public IP, I used the `curl` command to retrieve it from a site called 'ifconfig.me' that holds your IP address information and curl commands to use on the CLI. In this case: `curl ifconfig.me`. This command worked to return my public IP in the terminal, however, when I would test it in my script (after saving it to a variable and printing that variable), I'd get a table of information alongside my public IP.
+
+![image](https://github.com/user-attachments/assets/a834808d-b932-4ebf-9cdf-d0604aa96af9)
+
+Then, I found the -s flag which "mutes" `curl`, meaning any output of progress reports or errors would not be printed in the output - which is what I understood the progress table that was printing before to be. Rewriting the command with the -s flag only output the public IP and I tested again with saving it to a variable and it worked when I printed that variable. Then I used an echo statement to print out both the private and public IP in one statement for the user.
+
+*I ended up putting private IP first in the sentence, because the default output of the private IP includes a space at the end of it. So in my echo message, I could easily format the output by not putting a space before the text that comes right after "$private_ip".
 
 ![image](https://github.com/user-attachments/assets/18a8a107-5eea-493c-a7cb-c895c9bce21b)
 
@@ -51,9 +57,11 @@ echo "You are user: "$user"."
 
 ## 3. CPU Information:
 
-To show CPU, I used the `top` command to get a list of the ongoing processes, then used `grep` to isolate the line starting with "%Cpu(s):" → `top -bn1 | grep "%Cpu(s):"`
+For CPU information, I decided to output the idle CPU amount to the user. I used the `top` command to get a list of my system's activity, then used `grep` to isolate the line starting with "%Cpu(s):" → `top -bn1 | grep "%Cpu(s):"`
 
-Then I used `awk` to print the CPU id value to get the idle CPU: `top -bn1 | grep "%Cpu(s):" | awk '{print $8}'`
+I used the -b flag with `top` to run top in "batch mode" or a mode where I could record the output, and the -n flag with 1 so that top would only iterate once in order for me to capture a snapshot of the idle CPU. 
+
+Then I used `awk` to print 'id' value of the idle CPU: `top -bn1 | grep "%Cpu(s):" | awk '{print $8}'`
 
 However, when I tested this command out on the terminal, sometimes it would correctly output the idle CPU and other times it would output "id". I figured that depending on the changing values in the row, sometimes the "eigth" value in the row would either be the actual id amount or the word 'id'.
 
@@ -69,18 +77,23 @@ Through testing, I saw that when idle CPU was 100, there was no space between th
 
 Since I am only printing out the idle CPU amount for this section and not doing any math that requires me to isolate the idle CPU amount as an integer, I changed the `awk` statement to have a delineator of a comma instead of a space: `awk -F ',' '{print $4}'`
 
-This worked to isolate the idle CPU, however, when printing both the idle CPU and the entire CPU row from `top` to crosscheck, the values for idle CPU didn't match. I took this to mean that since I'm outputting a snapshot of top (since it ususally shows ongoing processes) that the idle CPU value might change between the script running each line of code (one line to show the full row and the next line to only print the idle CPU). Or, it could be that since I'm saving these "values" to variables, the variables are representing the snapshot of the information at the time the script is called. 
+This worked to isolate the idle CPU, however, when printing both the idle CPU and the entire CPU row from `top` to crosscheck, the values for idle CPU didn't always match. I took this to mean that since I'm outputting a snapshot of top (since it usually shows ongoing processes) that the idle CPU value might change between the script running each line of code (one line to show the full row and the next line to only print the idle CPU). Or similarly, it could be that since I'm saving these "values" to variables, the variables are representing the snapshot of the information at the time the script is called. And because I use -b and -n as flags to capture a snapshot of the processes instead of a "real-time" output.
+
 
 ![image](https://github.com/user-attachments/assets/96f69385-dccf-4106-b582-944abd35ea3d)
 
 
 ## 4. Memory Information:
 
-For memory, I used the `top` command to get a list of ongoing processes, then used `grep` to isolate the line starting with "MiB Mem :" → `top -bn1 | grep "MiB Mem : "`
+For memory, I used the `top` command to get a list of system activity, then used `grep` to isolate the line starting with "MiB Mem :" → `top -bn1 | grep "MiB Mem : "`
 
 Then I used `awk` to print four values within the memory row: total mem, used mem, free mem and the buff/cache amount of mem. 
 
-Using `echo`, I provided the amount of used memory out of total memory to the user as well as an estimated amount of the available free memory. To calculate an estimate of the available memory, I added the free mem and buff/cache mem amounts together from the `top` output. 
+Using `echo`, I provided the amount of used memory out of total memory to the user as well as an estimated amount of the available free memory. 
+
+To calculate an estimate of the available memory, I learned that free mem + buff/cache mem is an estimation of the total free memory because the buff/cache memory is able to be released quickly if its needed to be used by something else. 
+
+So I added the free mem and buff/cache mem amounts together from the `top` output, saved that total to a variable and used that in another echo statement. I also funnelled that addition echo section into a command called `bc` because 'bc' allows calculations with floating point numbers and all the mem amounts from `top` are floating point numbers ( from bash calculator, I learned that bash defaults to arithmetic with integers only.)
 
 ![image](https://github.com/user-attachments/assets/3b93e58d-38e7-42db-9d47-7a1b84387f84)
 
@@ -90,7 +103,7 @@ To output the top 5 memory processes in chart form, I used the `ps` command to g
 
 With `ps`, I used the -e flag to list all processes and the -o flag to specify which column headers I wanted to include in the output chart: process id, command and the memory percentage: `pid,comm,%mem`
 
-Then I used `--sort=-%mem` to sort the memory percentage column by greatest to lowest. (The '--' is used to separate the `sort` command from the part of the command where I specify which columns I want to output.)
+Then I used `--sort=-%mem` to sort the memory percentage column by greatest to lowest. (The '--' is used to separate the `sort` command from the previous part of the command where I specify which columns I want to output.)
 
 Full line:  `ps -eo pid,comm,%mem --sort=-%mem`
 
@@ -110,13 +123,23 @@ To output the top 5 CPU processes in a chart, I repeated the command used for my
 
 ## Network Connectivity:
 
-To show information on a network connection, I used the `curl` and `read` commands. 
-I used the 'o' and 's' flags to prevent the standard output of curl connecting to the URL from printing and to remove other information like speed upload or time spent and /dev/null as the file argument to ensure nothing printed. Then I used the 'w' flag to print out the value of the "time_connect" variable and save it as a variable called 'time'.
+To show information on a network connection, I found the following command that specifically returned back the time it took to connect to a webpage in seconds: `curl -o /dev/null -s -w "%{time_connect}\n" (urlhere)`
 
-Before adding in read, I tested this command with 'https://www.google.com/' google.com and got consistent results in seconds back. 
-Then I changed google.com to a variable called 'url' to be read from the user. Tested out google.com again, a page from Canvas and my IP address for my VSCode EC2 to verify this part of the menu worked. 
+- The -o flag is used to save the output of `curl` to a file (/dev/null) instead of printing it in the script's output.
+
+- Like in the command I used to get the public IP address, the -s flag mutes any output of progress reports or errors from `curl`.
+
+- The 'w' flag prints out the value of the "time_connect" variable specifically. Without either the -o or -w flags, the curl command printed out what looked like background site information of the site provided. 
+
+I saved this whole command to a variable called 'time'. ` time=$(curl -o /dev/null -s -w "%{time_connect}\n" url)`
+
+Before adding in read, I tested this command with 'https://www.google.com/' as the url and got consistent results in seconds back. 
+Then I used the `read -p` command to read the URL or IP address from the user, saved it to a variable called url and then used it in the above function. 
+
+Tested out google.com again, a page from Canvas and my IP address for my VSCode EC2 to verify this part of the menu worked. 
 
 ![image](https://github.com/user-attachments/assets/2420688a-537f-4783-987f-ca124892b526)
+
 
 ## Conclusion
 
