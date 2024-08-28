@@ -98,7 +98,7 @@ do
                 echo " "
                 read -p "Please enter a URL or IP address to connect to: " url
                 time=$(curl -o /dev/null -s -w "%{time_connect}\n" "$url")
-                echo "It took $time seconds to connect to "$url"."
+                echo "It took "$time" seconds to connect to "$url"."
                 echo " "
                 return
 
